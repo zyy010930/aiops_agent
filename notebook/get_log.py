@@ -124,8 +124,8 @@ def get_span_latency(log_client, project, logstore, service, start, end, isMedia
     span_data["checkout"].extend(checkout_calls)
 
     """获取指定时间段内特定节点上各hostname的平均duration"""
-    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
     start_minus_5 = start_dt - timedelta(minutes=10)
     end_plus_5 = end_dt + timedelta(minutes=10)
     start_dt = start_dt - timedelta(minutes=1)
@@ -266,8 +266,8 @@ def get_span_latency(log_client, project, logstore, service, start, end, isMedia
 
 def get_log(log_client, project, logstore, service, start, end, isMedian=True, upper=True):
     """获取指定时间段内特定节点上各hostname的平均duration"""
-    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
     start_minus_5 = start_dt - timedelta(minutes=10)
     end_plus_5 = end_dt + timedelta(minutes=10)
     start_dt = start_dt - timedelta(minutes=1)

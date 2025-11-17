@@ -99,8 +99,8 @@ except Exception as e:
 
 def get_errorInfo(log_client, project, logstore, service, start, end):
     """获取指定时间段内特定节点上各hostname的平均duration"""
-    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
     start = int(start_dt.timestamp()) * 1000000000
     end = int(end_dt.timestamp()) * 1000000000
 
@@ -125,8 +125,8 @@ def get_errorInfo(log_client, project, logstore, service, start, end):
 
 def get_span_error(log_client, project, logstore, service, start, end, isMedian=True):
     """获取指定时间段内特定节点上各hostname的平均duration"""
-    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
     start_minus_5 = start_dt - timedelta(minutes=10)
     end_plus_5 = end_dt + timedelta(minutes=10)
     start_dt = start_dt - timedelta(minutes=1)
@@ -248,8 +248,8 @@ def get_span_error(log_client, project, logstore, service, start, end, isMedian=
 
 def get_error(log_client, project, logstore, service, start, end, isMedian=True):
     """获取指定时间段内特定节点上各hostname的平均duration"""
-    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S")
-    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S")
+    start_dt = datetime.strptime(start, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+    end_dt = datetime.strptime(end, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
     # 计算时间差（分钟为单位，取整数）
     time_diff_minutes = int((end_dt - start_dt).total_seconds() / 60)
     start_minus_5 = start_dt - timedelta(minutes=10)
