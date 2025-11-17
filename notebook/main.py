@@ -1,6 +1,6 @@
 import argparse
 import json
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 from get_log import read_input_data
 from parallel_agent import analyze_latency_problem, analyze_grey_failure, analyze_error_problem
@@ -24,8 +24,8 @@ if __name__ == "__main__":
         evidences_data = []
 
         start_str, end_str = time_range.split(' ~ ')
-        normal_start = datetime.strptime(start_str.strip(), "%Y-%m-%d %H:%M:%S")
-        normal_end = datetime.strptime(end_str.strip(), "%Y-%m-%d %H:%M:%S")
+        normal_start = datetime.strptime(start_str.strip(), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+        normal_end = datetime.strptime(end_str.strip(), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
 
         if problem_data.get("problem_id") != "050":
             continue
