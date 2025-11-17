@@ -908,8 +908,8 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
                     continue
                 hostname_list = get_instance(log_client, PROJECT_NAME, LOGSTORE_NAME, service,
                                              start_str.strip(), end_str.strip())
-                start = datetime.strptime(start_str.strip(), "%Y-%m-%d %H:%M:%S")
-                end = datetime.strptime(end_str.strip(), "%Y-%m-%d %H:%M:%S")
+                start = datetime.strptime(start_str.strip(), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
+                end = datetime.strptime(end_str.strip(), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
                 num = 0
                 for hostname in hostname_list:
                     print(f"🔍 Found hostname {hostname}, processing...")
