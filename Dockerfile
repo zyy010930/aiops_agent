@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua
 
 # （可选）指定容器启动命令（根据实际入口脚本调整）
 # 例如：运行测试用例
-CMD ["python", "app/notebook/main.py"]
+CMD ["python", "notebook/main.py"]
