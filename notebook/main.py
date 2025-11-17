@@ -27,8 +27,8 @@ if __name__ == "__main__":
         normal_start = datetime.strptime(start_str.strip(), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
         normal_end = datetime.strptime(end_str.strip(), "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone(timedelta(hours=8)))
 
-        if problem_data.get("problem_id") != "050":
-            continue
+        # if problem_data.get("problem_id") != "050":
+        #     continue
 
         if problem_data.get("alarm_rules")[0] == 'frontend_avg_rt' or problem_data.get("alarm_rules")[
             0] == 'service_avg_rt':
@@ -53,9 +53,9 @@ if __name__ == "__main__":
             #"evidences": evidences_data
         })
 
-    # # 写入JSONL文件
-    # output_file_path = args.output
-    # with open(output_file_path, 'w', encoding='utf-8') as f:
-    #     for result in output_results:
-    #         f.write(json.dumps(result, ensure_ascii=False) + '\n')
-    # print(f"✅ 结果已写入 {output_file_path}")
+    # 写入JSONL文件
+    output_file_path = args.output
+    with open(output_file_path, 'w', encoding='utf-8') as f:
+        for result in output_results:
+            f.write(json.dumps(result, ensure_ascii=False) + '\n')
+    print(f"✅ 结果已写入 {output_file_path}")
