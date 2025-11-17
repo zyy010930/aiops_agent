@@ -8,8 +8,8 @@ from parallel_agent import analyze_latency_problem, analyze_grey_failure, analyz
 if __name__ == "__main__":
     # 解析命令行参数
     parser = argparse.ArgumentParser(description='故障根因分析程序')
-    parser.add_argument('--input', required=True, help='输入JSONL文件路径')
-    parser.add_argument('--output', required=True, help='输出JSONL文件路径')
+    parser.add_argument('--input', default='input.jsonl', help='输入JSONL文件路径')
+    parser.add_argument('--output', default='output.jsonl', help='输出JSONL文件路径')
     parser.add_argument('--timeout', type=int, default=300, help='单题最大处理时长(秒)')
     args = parser.parse_args()
 
