@@ -140,7 +140,7 @@ def get_instance(log_client, project, logstore, service, start, end):
 if __name__ == "__main__":
     serveice_list = []
     problem_id = "056"
-    input_data = read_input_data("../B榜题目.jsonl")
+    input_data = read_input_data("../input.jsonl")
     podKilled = []
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:

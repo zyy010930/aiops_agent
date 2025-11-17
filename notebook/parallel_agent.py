@@ -2,7 +2,7 @@ import json
 import os
 import argparse
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from typing import Dict, Set, List, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -345,8 +345,8 @@ def analyze_latency_problem(normal_start, normal_end, candidate_root_causes):
     latency_candidates = []  # 临时存储所有latency候选服务
     root_cause_data = {}  # 新增：存储根因数据的字典
     evidences_dict = defaultdict(list)  # 存储每个根因的证据
-    start_str = normal_start.strftime('%Y-%m-%d %H:%M:%S')
-    end_str = normal_end.strftime('%Y-%m-%d %H:%M:%S')
+    start_str = normal_start.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
+    end_str = normal_end.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
 
     def process_one_service(service, normal_start, normal_end, isMedian=True):
         result = {
@@ -715,8 +715,8 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
     combined = []
     root_cause_data = {}
     evidences_dict = defaultdict(list)  # 存储每个根因的证据
-    start_str = normal_start.strftime('%Y-%m-%d %H:%M:%S')
-    end_str = normal_end.strftime('%Y-%m-%d %H:%M:%S')
+    start_str = normal_start.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
+    end_str = normal_end.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
 
     def process_one_service(service, normal_start, normal_end):
         result = {
@@ -1008,8 +1008,8 @@ def analyze_error_problem(normal_start, normal_end, candidate_root_causes):
     anomaly_list: List[Dict[str, Any]] = []
     root_cause_data = {}
     evidences_dict = defaultdict(list)  # 存储每个根因的证据
-    start_str = normal_start.strftime('%Y-%m-%d %H:%M:%S')
-    end_str = normal_end.strftime('%Y-%m-%d %H:%M:%S')
+    start_str = normal_start.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
+    end_str = normal_end.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
 
     def process_one_service(service, normal_start, normal_end):
         result = {
@@ -1019,8 +1019,8 @@ def analyze_error_problem(normal_start, normal_end, candidate_root_causes):
         }
         # 1. 查询报错数据
         print(f"🔍 查询 {service} 服务报错数据...")
-        start_str = normal_start.strftime('%Y-%m-%d %H:%M:%S')
-        end_str = normal_end.strftime('%Y-%m-%d %H:%M:%S')
+        start_str = normal_start.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
+        end_str = normal_end.replace(tzinfo=timezone(timedelta(hours=8))).strftime('%Y-%m-%d %H:%M:%S')
         error_anomaly, _, target_error, _ = get_error(log_client, PROJECT_NAME, LOGSTORE_NAME, service,
                                                       start_str.strip(), end_str.strip())
         if error_anomaly and target_error > 2.0:
@@ -1092,7 +1092,7 @@ def analyze_error_problem(normal_start, normal_end, candidate_root_causes):
             # 只保留该服务的根因
             root_causes = [item for item in root_causes if item.split('.')[0] == max_amplitude_service]
             print(f"🎯 按最大上升幅度筛选后的根因: {root_causes}")
-    if root_causes[0].split('.')[0] == "inventory":
+    if len(root_causes) > 0 and root_causes[0].split('.')[0] == "inventory":
         print(f"🔍 查询 inventory 服务CPU数据...")
         cpu_anomaly, max_cpu, _ = analyze_cpu(normal_start, normal_end, "inventory", False)
         if cpu_anomaly:

@@ -1,7 +1,7 @@
 import json
 import os
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from aliyun.log import LogClient, GetLogsRequest
 from matplotlib import pyplot as plt
@@ -167,7 +167,7 @@ def get_span_error(log_client, project, logstore, service, start, end, isMedian=
                 log_list.append({
                     "time_ms": time_stamp,
                     # 同时转换为可读时间格式（用于x轴显示）
-                    "time_str": datetime.fromtimestamp(time_stamp / 1000).strftime("%Y-%m-%d %H:%M:%S"),
+                    "time_str": datetime.fromtimestamp(time_stamp / 1000).replace(tzinfo=timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S"),
                     "statusCode": float(avg_duration)
                 })
             except ValueError:
@@ -292,7 +292,7 @@ def get_error(log_client, project, logstore, service, start, end, isMedian=True)
                 log_list.append({
                     "time_ms": time_stamp,
                     # 同时转换为可读时间格式（用于x轴显示）
-                    "time_str": datetime.fromtimestamp(time_stamp / 1000).strftime("%Y-%m-%d %H:%M:%S"),
+                    "time_str": datetime.fromtimestamp(time_stamp / 1000).replace(tzinfo=timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S"),
                     "statusCode": float(avg_duration)
                 })
             except ValueError:
@@ -388,7 +388,7 @@ def get_error(log_client, project, logstore, service, start, end, isMedian=True)
 if __name__ == "__main__":
     serveice_list = []
     problem_id = "040"
-    input_data = read_input_data("../B榜题目.jsonl")
+    input_data = read_input_data("../input.jsonl")
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:
             print(f"🔍 Found problem {problem_id}, processing...")

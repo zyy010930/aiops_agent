@@ -487,7 +487,7 @@ def analyze_ecs_disk(normal_start, normal_end, Target_ECS, show):
 if __name__ == "__main__":
     serveice_list = []
     problem_id = "187"
-    input_data = read_input_data("../B榜题目.jsonl")
+    input_data = read_input_data("../input.jsonl")
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:
             print(f"🔍 Found problem {problem_id}, processing...")

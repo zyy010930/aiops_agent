@@ -580,7 +580,7 @@ def get_pod(normal_start, normal_end, Target_pod, show):
 if __name__ == "__main__":
     serveice_list = []
     problem_id = "129"
-    input_data = read_input_data("../B榜题目.jsonl")
+    input_data = read_input_data("../input.jsonl")
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:
         # if True:

@@ -432,7 +432,7 @@ def analyze_gc(normal_start, normal_end, Target_ECS, show):
 if __name__ == "__main__":
     serveice_list = []
     problem_id = "151"
-    input_data = read_input_data("../B榜题目.jsonl")
+    input_data = read_input_data("../input.jsonl")
     anomaly_list = []
     for problem_data in input_data:
         problem_id = problem_data.get("problem_id", "unknown")
