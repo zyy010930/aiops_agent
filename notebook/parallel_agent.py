@@ -12,7 +12,7 @@ from openai import OpenAI
 from get_entity import analyze_cpu, analyze_memory, get_pod
 from get_log import read_input_data, get_log, get_span_latency
 from get_ecs import analyze_ecs_memory, analyze_ecs_cpu, analyze_ecs_disk
-from get_error import get_error, get_span_error
+from get_error import get_error, get_span_error, get_errorInfo
 from get_instance import get_instance
 from get_prom import analyze_network, analyze_gc
 
@@ -674,11 +674,6 @@ def analyze_latency_problem(normal_start, normal_end, candidate_root_causes):
         # 如果只存在1-2个服务疑似上升，则不是checkout或frontend的问题
         if len(latency_candidates) < 3:
             root_causes, evidences_dict = get_only_anomaly(anomaly_list, latency_candidates, evidences_dict)
-    # elif len(root_causes) > 0 and root_causes[0].split('.')[1] == "networkLatency":
-    #     service = root_causes[0].split('.')[0]
-    #     flag, _, _, _ = get_error(log_client, PROJECT_NAME, LOGSTORE_NAME, service, start_str.strip(), end_str.strip())
-    #     if flag:
-    #         root_causes = [service + ".Failure"]
 
     if len(root_causes) == 0:
         print("⚠️ 根因列表为空，开始查询少见情况")
@@ -741,14 +736,6 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
         # 5. 查询Memory数据
         print(f"🔍 查询 {service} 服务Memory数据...")
         if service == "email":
-            # flag, _, _, _, _ = get_log(log_client, PROJECT_NAME, LOGSTORE_NAME, "email", start_str.strip(), end_str.strip(), True, False)
-            # cpu_anomaly, _, _ = analyze_cpu(normal_start, normal_end, "email", show, False)
-            # if flag and cpu_anomaly:
-            #     result['memory_anomaly'] = True
-            #     memory_anomaly, max_memory, memory_data = analyze_memory(normal_start, normal_end, service, show)
-            #     result['memory_data'] = memory_data
-            #     result['max_memory'] = max_memory
-            # else:
             result['memory_anomaly'] = False
             result['memory_data'] = []
         else:
@@ -910,8 +897,6 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
         for candidate in candidate_root_causes:
             if '.' in candidate and candidate.endswith('.cpu'):
                 service = candidate.split('.')[0]
-                # if service[1] == '-' or service == "load-generator":
-                #     continue
                 if service != 'checkout' and service != "frontend" and service != "product-catalog":
                     continue
                 hostname_list = get_instance(log_client, PROJECT_NAME, LOGSTORE_NAME, service,

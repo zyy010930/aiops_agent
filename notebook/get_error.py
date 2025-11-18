@@ -387,8 +387,8 @@ def get_error(log_client, project, logstore, service, start, end, isMedian=True)
 
 if __name__ == "__main__":
     serveice_list = []
-    problem_id = "040"
-    input_data = read_input_data("../input.jsonl")
+    problem_id = "268"
+    input_data = read_input_data("input.jsonl")
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:
             print(f"🔍 Found problem {problem_id}, processing...")
@@ -400,9 +400,9 @@ if __name__ == "__main__":
             start_time, end_time = time_range.split(' ~ ')
             start_time = start_time.strip()
             end_time = end_time.strip()
-            flag = get_error(log_client, PROJECT_NAME, LOGSTORE_NAME, "ad", start_time, end_time)
+            # flag = get_error(log_client, PROJECT_NAME, LOGSTORE_NAME, "ad", start_time, end_time)
             # flag = get_span_error(log_client, PROJECT_NAME, LOGSTORE_NAME, "currency", start_time, end_time)
-            # get_errorInfo(log_client, PROJECT_NAME, LOGSTORE_NAME, "cart", start_time, end_time)
+            get_errorInfo(log_client, PROJECT_NAME, LOGSTORE_NAME, "cart", start_time, end_time)
     #         for candidate in candidate_root_causes:
     #             if '.' in candidate and candidate.endswith('.cpu'):
     #                 service = candidate.split('.')[0]
