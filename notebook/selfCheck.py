@@ -125,7 +125,7 @@ def compare_root_causes(correct_file: str, test_file: str, problem_file: str) ->
 if __name__ == "__main__":
     # 请替换为实际的文件路径
     CORRECT_FILE_PATH = "C://Users//17556//Desktop//aliyun//test11-14.jsonl"
-    TEST_FILE_PATH = "output.jsonl"
+    TEST_FILE_PATH = "output_linux.jsonl"
     PROBLEM_FILE_PATH = "C://Users//17556//Desktop//tianchi-2025-basic//B榜题目.jsonl"  # 问题文件路径
 
     compare_root_causes(CORRECT_FILE_PATH, TEST_FILE_PATH, PROBLEM_FILE_PATH)

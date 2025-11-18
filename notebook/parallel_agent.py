@@ -28,7 +28,7 @@ def call_bailian_model(root_causes: List[str], root_cause_data: Dict[str, Any]) 
     """
     client = OpenAI(
         # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx",
-        api_key=os.getenv("OPENAI_API_KEY"),
+        api_key=os.getenv("BAILIAN_API_KEY"),
         base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
 
