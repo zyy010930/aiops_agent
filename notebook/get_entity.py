@@ -175,7 +175,7 @@ def read_input_data(input_file_path):
         return []
 
 
-def detect_anomaly(normal_values, pre_values, post_values, threshold=1.5):
+def detect_anomaly(normal_values, pre_values, post_values, threshold=1.5, upper=True):
     """
     检测正常时段的指标是否明显高于前后时段
 
@@ -191,7 +191,7 @@ def detect_anomaly(normal_values, pre_values, post_values, threshold=1.5):
     if not normal_values or not pre_values or not post_values:
         print("⚠️ 缺少数据，无法进行异常检测")
         return False, 0, 0, 0
-
+    is_anomaly = False
     # 计算各时段平均值
     normal_avg = np.mean(normal_values)
     pre_avg = np.mean(pre_values)
@@ -203,9 +203,13 @@ def detect_anomaly(normal_values, pre_values, post_values, threshold=1.5):
     # 如果基线平均值大于40，则将阈值调低
     if baseline_avg > 40:
         threshold = 1.25
-
+    print(normal_avg, pre_avg, post_avg, baseline_avg)
     # 判断是否异常：正常时段平均值明显高于基线
-    is_anomaly = normal_avg > baseline_avg * threshold and pre_avg < normal_avg and post_avg < normal_avg
+    if upper:
+        is_anomaly = normal_avg > baseline_avg * threshold and pre_avg < normal_avg and post_avg < normal_avg
+    else:
+        is_anomaly = normal_avg * 1.2 < baseline_avg and pre_avg > normal_avg and post_avg > normal_avg
+        print(is_anomaly)
 
     return is_anomaly, normal_avg, pre_avg, post_avg
 
@@ -290,7 +294,7 @@ def get_result(result):
     return timestamps, cpu_values
 
 
-def analyze_cpu(normal_start, normal_end, Target_service, show):
+def analyze_cpu(normal_start, normal_end, Target_service, show, upper=True):
     # 1. 计算三个时段的时间戳（转为int类型，CMS查询要求）
     # 前10分钟：normal_start - 10min 到 normal_start
     pre10_start = int((normal_start - timedelta(minutes=10)).timestamp())
@@ -324,23 +328,44 @@ def analyze_cpu(normal_start, normal_end, Target_service, show):
         timestamps, cpu, pre10_end_dt, normal_end_dt
     )
 
-    # 5. 异常检测
-    is_anomaly, normal_avg, pre_avg, post_avg = detect_anomaly(
-        normal_values, pre_values, post_values
-    )
-    max_cpu = max(normal_values)
+    is_anomaly = False
+    max_cpu = 0
+    if upper:
+        # 5. 异常检测
+        is_anomaly, normal_avg, pre_avg, post_avg = detect_anomaly(
+            normal_values, pre_values, post_values
+        )
+        max_cpu = max(normal_values)
 
-    # 6. 输出异常检测结果
-    print(f"\ncpu异常检测结果:")
-    print(f"前10分钟平均值: {pre_avg:.4f}")
-    print(f"检测时段平均值: {normal_avg:.4f}")
-    print(f"后10分钟平均值: {post_avg:.4f}")
-    print(f"最大CPU使用率: {max_cpu:.4f}")
+        # 6. 输出异常检测结果
+        print(f"\ncpu异常检测结果:")
+        print(f"前10分钟平均值: {pre_avg:.4f}")
+        print(f"检测时段平均值: {normal_avg:.4f}")
+        print(f"后10分钟平均值: {post_avg:.4f}")
+        print(f"最大CPU使用率: {max_cpu:.4f}")
 
-    if is_anomaly:
-        print(f"🔴 异常检测: 检测时段cpu明显高于前后时段!")
+        if is_anomaly:
+            print(f"🔴 异常检测: 检测时段cpu明显高于前后时段!")
+        else:
+            print(f"🟢 异常检测: 检测时段cpu处于正常范围")
     else:
-        print(f"🟢 异常检测: 检测时段cpu处于正常范围")
+        # 5. 异常检测
+        is_anomaly, normal_avg, pre_avg, post_avg = detect_anomaly(
+            normal_values, pre_values, post_values, 1.2, False
+        )
+        max_cpu = min(normal_values)
+
+        # 6. 输出异常检测结果
+        print(f"\ncpu异常检测结果:")
+        print(f"前10分钟平均值: {pre_avg:.4f}")
+        print(f"检测时段平均值: {normal_avg:.4f}")
+        print(f"后10分钟平均值: {post_avg:.4f}")
+        print(f"最小CPU使用率: {max_cpu:.4f}")
+
+        if is_anomaly:
+            print(f"🔴 异常检测: 检测时段cpu明显高于前后时段!")
+        else:
+            print(f"🟢 异常检测: 检测时段cpu处于正常范围")
 
     if show:
         plt.figure(figsize=(12, 6))
@@ -579,7 +604,7 @@ def get_pod(normal_start, normal_end, Target_pod, show):
 
 if __name__ == "__main__":
     serveice_list = []
-    problem_id = "129"
+    problem_id = "059"
     input_data = read_input_data("../input.jsonl")
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:
@@ -595,9 +620,9 @@ if __name__ == "__main__":
             normal_end = datetime.strptime(end_str.strip(), "%Y-%m-%d %H:%M:%S")
             print(f"⏰ 正常时段: {normal_start} ~ {normal_end}")
 
-            target_service = "payment"
+            target_service = "email"
             show = True
-            cpu_anomaly = analyze_cpu(normal_start, normal_end, target_service, show)
+            cpu_anomaly = analyze_cpu(normal_start, normal_end, target_service, show, False)
             memory_anomaly = analyze_memory(normal_start, normal_end, target_service, show)
             print(f"CPU异常: {cpu_anomaly}, Memory异常: {memory_anomaly}")
             if cpu_anomaly[0]:

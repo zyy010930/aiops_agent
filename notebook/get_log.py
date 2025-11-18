@@ -416,7 +416,7 @@ def get_log(log_client, project, logstore, service, start, end, isMedian=True, u
 
 if __name__ == "__main__":
     serveice_list = []
-    problem_id = "002"
+    problem_id = "059"
     input_data = read_input_data("../input.jsonl")
     for problem_data in input_data:
         if problem_data.get("problem_id") == problem_id:
@@ -429,8 +429,9 @@ if __name__ == "__main__":
             start_time, end_time = time_range.split(' ~ ')
             start_time = start_time.strip()
             end_time = end_time.strip()
-            flag, _, _, _, _ = get_log(log_client, PROJECT_NAME, LOGSTORE_NAME, "ad", start_time, end_time, True, True)
+            # flag, _, _, _, _ = get_log(log_client, PROJECT_NAME, LOGSTORE_NAME, "ad", start_time, end_time, True, True)
             # flag = get_span_latency(log_client, PROJECT_NAME, LOGSTORE_NAME, "checkout", start_time, end_time)
+            flag, _, _, _, _ = get_log(log_client, PROJECT_NAME, LOGSTORE_NAME, "email", start_time, end_time, True, False)
             print(flag)
             if flag:
                 serveice_list.append(problem_id)

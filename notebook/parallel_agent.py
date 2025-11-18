@@ -741,6 +741,14 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
         # 5. 查询Memory数据
         print(f"🔍 查询 {service} 服务Memory数据...")
         if service == "email":
+            # flag, _, _, _, _ = get_log(log_client, PROJECT_NAME, LOGSTORE_NAME, "email", start_str.strip(), end_str.strip(), True, False)
+            # cpu_anomaly, _, _ = analyze_cpu(normal_start, normal_end, "email", show, False)
+            # if flag and cpu_anomaly:
+            #     result['memory_anomaly'] = True
+            #     memory_anomaly, max_memory, memory_data = analyze_memory(normal_start, normal_end, service, show)
+            #     result['memory_data'] = memory_data
+            #     result['max_memory'] = max_memory
+            # else:
             result['memory_anomaly'] = False
             result['memory_data'] = []
         else:
@@ -938,6 +946,15 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
     print(f"🎯 筛选后的根因列表: {root_causes}")
 
     if len(root_causes) == 0:
+        flag, _, _, _, _ = get_log(log_client, PROJECT_NAME, LOGSTORE_NAME, "email", start_str.strip(), end_str.strip(), True, False)
+        cpu_anomaly, _, _ = analyze_cpu(normal_start, normal_end, "email", show, False)
+        if flag and cpu_anomaly:
+            root_causes = ["email.memory"]
+            evidences_dict["email.memory"].append(
+                f"email服务在检测时间段内存在cpu异常下降，且延迟下降，可能是OOM所导致的"
+            )
+
+    if len(root_causes) == 0:
         print("⚠️ 根因列表依旧为空，查询延迟情况")
         def process_one_service(service, normal_start, normal_end, isMedian=True):
             result = {
@@ -989,7 +1006,7 @@ def analyze_grey_failure(normal_start, normal_end, candidate_root_causes):
                     anomaly_list.append(result['anomaly_data'])
 
         root_causes, evidences_dict = get_only_anomaly(anomaly_list, latency_candidates, evidences_dict)
-        print(f"🎯 筛选后的根因列表: {root_causes}")
+    print(f"🎯 筛选后的根因列表: {root_causes}")
 
     # 收集最终证据
     final_evidences = []
